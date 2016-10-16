@@ -1,8 +1,13 @@
 package com.example.DAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +18,7 @@ import com.example.Entity.*;
 public class UserDAO {
 	
 	private static ArrayList<User> users;
+	private DataSource dataSource;
 	
 	 static {
 
@@ -40,5 +46,36 @@ public class UserDAO {
 	 public void insertUser(User user) {
 		 users.add(user);
 	 }
+	 
+	 public void setDataSource(DataSource dataSource) {
+			this.dataSource = dataSource;
+		}
+	 
+	 public void insert(User user){
+
+			String sql = "INSERT INTO users " +
+					"(id, name, password) VALUES (?, ?, ?)";
+			Connection conn = null;
+
+			try {
+				conn = dataSource.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, user.getId());
+				ps.setString(2, user.getUsername());
+				ps.setString(3, user.getPassword());
+				ps.executeUpdate();
+				ps.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {}
+				}
+			}
+		}
 
 }
