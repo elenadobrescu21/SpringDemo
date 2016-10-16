@@ -9,7 +9,7 @@
 
 
 <bean class="com.example.Hello" id="helloWorld">
- 	<property name = "message" value ="Hello world!">
+ 	<property name = "message" value ="Hello kitty!">
  	
  	</property>
 
